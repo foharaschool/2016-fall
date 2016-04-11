@@ -1,0 +1,8 @@
+Internship Weekly Journal Status Report
+Name: Fred O'Hara
+Internship Company: Trident Contract Management
+Dates: Mar. 28-31, 2016
+Hours worked this week: 32
+Total hours worked: 32
+Notes: This week I underwent Salesforce training using the Salesforce Trailhead learning modules.
+I also worked on a duplicate record task where I located duplicate data using Excel formulas.
