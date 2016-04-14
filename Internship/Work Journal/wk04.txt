@@ -1,0 +1,8 @@
+Internship Weekly Journal Status Report
+Name: Fred O'Hara
+Internship Company: Trident Contract Management
+Dates: Apr. 11-14, 2016
+Hours worked this week: 32
+Total hours worked: 96
+Notes: This week was spent mostly in training modules, though they are looking for work for me to do.  On Thursday I was handed a trouble-shoot task where I identified the problem, but am waiting for the sandbox to generate before I can test corrections.
+
