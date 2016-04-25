@@ -1,0 +1,9 @@
+Internship Weekly Journal Status Report
+Name: Fred O'Hara
+Internship Company: Trident Contract Management
+Dates: Apr. 18-22, 2016
+Hours worked this week: 32
+Total hours worked: 128
+Notes: This week was spent mostly in specific training.  My manager wanted me to become the source of knowledge in building and launching salesforce communities.
+On Wednesday, I pair coded with a senior developer.  He sat with me and walked me through writing a trigger in the salesforce apex language.
+On Thursday, I pair coded with a senior intern.  I sat with him while we worked through the development of automated workflows, emails, and reports.  There was no coding involved.
