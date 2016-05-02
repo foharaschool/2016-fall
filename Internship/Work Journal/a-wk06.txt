@@ -1,0 +1,7 @@
+Internship Weekly Journal Status Report
+Name: Fred O'Hara
+Internship Company: Trident Contract Management
+Dates: Apr. 25-28, 2016
+Hours worked this week: 32
+Total hours worked: 170
+Notes: A good week for work.  I worked on a custom report, and the focus of the week was a lead conversion script that triggered based on process criteria.  I wrote the script from scratch as well as the test class.
