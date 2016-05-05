@@ -1,0 +1,7 @@
+Internship Weekly Journal Status Report
+Name: Fred O'Hara
+Internship Company: Trident Contract Management
+Dates: May. 02-05, 2016
+Hours worked this week: 32
+Total hours worked: 203
+Notes: This week, I worked on an apex class for a custom button action that cloned a record and its associated objects, manipulating the field mapping.  I also installed and configured a docusign application as a Proof of concept for a partner portal.
