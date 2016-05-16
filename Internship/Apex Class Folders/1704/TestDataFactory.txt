@@ -1,0 +1,91 @@
+@isTest
+public class TestDataFactory {
+	
+    // METHOD: Create internal Contact
+    public static Contact createInternalContact() {
+        
+        Account a = new Account(Name='internalAccount');
+        
+        insert a;
+        
+        // Get record type for labor contact
+        //Query for the Account record types
+     	List<RecordType> rtypes = [Select Name, Id From RecordType 
+                  where sObjectType='Contact' and isActive=true];
+     
+        //Create a map between the Record Type Name and Id for easy retrieval
+        Map<String,String> contactRecordTypes = new Map<String,String>{};
+         
+        for(RecordType rt: rtypes) {
+        	contactRecordTypes.put(rt.Name,rt.Id);
+        }
+        
+        Contact c = new Contact(FirstName = 'Bob',
+                               LastName = 'Test',
+                               Accountid = a.id,
+                               RecordTypeId = contactRecordTypes.get('Laborer Record'));
+        
+        insert c;
+        
+        return c;
+    }
+    
+    
+    // METHOD: Create Accounts with Projects
+    public static List<Project__c> createProejctsWithAccounts(Integer numProjectsPerAcct, Integer numAccts) {
+        
+        List<Account> accts = new List<Account>();
+        
+        for(Integer i=0;i<numAccts;i++) {
+            Account a = new Account(Name='TestAccount' + i);
+            accts.add(a);
+        }
+        insert accts;
+        
+        List<Project__c> projects = new List<Project__c>();
+
+        for (Integer j=0;j<numAccts;j++) {
+            Account acct = accts[j];
+            // For each account just inserted, add projects
+            for (Integer k=0;k<numProjectsPerAcct;k++) {
+                projects.add(new Project__c(Name=acct.Name + ' Project ' + k,
+                                       Account__c=acct.Id));
+            }
+        }
+        insert projects;
+        
+        return projects;
+    }
+    
+    // Method: Create project schedules with set project stage
+    public static list<Project_Schedule__c> createProjectSchedules(Integer numSchedules, String projectStage, List<Project__c> projectList) {
+        // Call createInternalContact
+        Contact c = createInternalContact();
+        
+        // Call createProejctsWithAccounts
+        List<Project__c> projects = projectList;
+        
+        List<Project_Schedule__c> schedules = new List<Project_Schedule__c>();
+        
+        // for each project, create numSchedules
+        for(Project__c p : projects) {
+            
+            for(Integer i = 0; i< numSchedules; i++) {
+                schedules.add(new Project_Schedule__c(Project__c = p.id,
+                                                     Name__c = c.Id,
+                                                     Project_Stage__c = projectStage,
+                                                     Start__c = System.now(),
+                                                     End__c = System.now()));
+                
+            }
+        }
+        
+        insert schedules;
+            
+        return schedules;
+        
+    }
+    
+    
+    
+}

@@ -1,0 +1,31 @@
+trigger NewJobReportTrigger on Daily_Job_Report__c (after insert) {
+	
+    // Get schedules in the project with the same stage as the created job report       
+    List<Daily_Job_Report__c> reports = [Select id, Project__c, Project_Stage__c FROM Daily_Job_Report__c WHERE id IN :Trigger.New];
+    List<Project_Schedule__c> schedules = [Select id, Name__c, Project__c, Start__c, End__c, Project_Stage__c FROM Project_Schedule__c WHERE Entered__c = FALSE];
+    System.debug(reports);
+    System.debug(reports.size());
+    List<Time_Entry__c> timeEntries = new List<Time_Entry__c>();
+    
+    for(Daily_Job_Report__c djr : reports) {
+        
+        // Loop schedules to find schedules with the same project name and stage
+        for(Project_Schedule__c s : schedules) {
+            if(djr.Project__c.equals(s.Project__c) && djr.Project_Stage__c.equals(s.Project_Stage__c)) {
+                // Create time entry
+                timeEntries.add( new Time_Entry__c(Name__c = s.Name__c,
+                                                  Start__c = s.Start__c,
+                                                  End__c = s.End__c,
+                                                  Project__c = s.Project__c,
+                                                  Project_Stage__c = s.Project_Stage__c,
+                                                  Daily_Job_Report__c = djr.id));
+                // update schedule to entered
+                s.Entered__c = true;
+            }
+        } 
+        
+        // insert time entries and update schedules
+        insert timeEntries;
+        update schedules;
+    }    
+}

@@ -1,0 +1,7 @@
+Internship Weekly Journal Status Report
+Name: Fred O'Hara
+Internship Company: Trident Contract Management
+Dates: May. 09-12, 2016
+Hours worked this week: 31.5
+Total hours worked: 234.5
+Notes: This week, I worked on designing a solution that allowed a client to utilize a calendar app as a scheduling solution.  The solution involved created a new salesforce object, that allowed me to connect calendars to salesforce contacts. I also worked on updating fields and html for a pdf quote.

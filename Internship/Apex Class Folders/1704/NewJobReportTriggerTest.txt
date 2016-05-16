@@ -1,0 +1,46 @@
+@isTest
+private class NewJobReportTriggerTest {
+	
+    // The purpose of this test class is to assert that schedules are converted accurately into Time entries 
+	// when a daily job report is created for a project 
+    @isTest static void createDailyJobReportAttachesTimeEntriesTest() {
+        
+        // Set test conditions
+        String projectStage = 'Erect';
+        Integer numProjectsPerAcct = 1;
+        Integer numAccts = 1;
+        Integer numSchedulesPerProject = 2;
+        Integer totalSchedules = numAccts * numProjectsPerAcct * numSchedulesPerProject;
+        
+        // Create projects
+        List<Project__c> testProjects = TestDataFactory.createProejctsWithAccounts(numProjectsPerAcct, numAccts);
+        System.debug(testProjects.size());
+        
+        // Create schedules
+        list<Project_Schedule__c> testSchedules = TestDataFactory.createProjectSchedules(numSchedulesPerProject, projectStage, testProjects);
+        System.debug(testSchedules.size());
+        
+        // List to hold job reports
+        List<Daily_Job_Report__c> djr = new List<Daily_Job_Report__c>();
+        
+        // Create Daily job report for each project
+        for (Project__c p : testProjects) {
+            djr.add(new Daily_Job_Report__c(Project__c = p.id,
+                                           Project_Stage__c = projectStage));
+        }
+        
+        insert djr;
+        
+        // Query for created time entries
+        List<Time_Entry__c> te = [Select id, Project_Stage__c, Start__c, End__c FROM Time_Entry__c];
+        
+        // Assert that the number of Time Entries match the Schedules
+        System.assertEquals(te.size(), totalSchedules);
+        
+        // Assert that the stage of each time entry matches the set project stage
+        for(Time_Entry__c t : te) {
+            System.assertEquals(t.Project_Stage__c, projectStage);
+        }
+        
+    }
+}
