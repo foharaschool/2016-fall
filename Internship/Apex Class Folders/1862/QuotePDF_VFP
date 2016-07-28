@@ -1,0 +1,591 @@
+<apex:page standardController="Quote" extensions="QuotePDFTemplateExtension" renderAs="pdf" showHeader="false" sidebar="false" action="{!autoRun}">
+    <head>
+        <style>
+        </style>
+    </head>
+    <div id="header">
+        <apex:image url="{!$Resource.A1Logo}" width="100%" />
+    </div>
+    <div style="text-align:center; font-size: 120%; font-weight:bold">
+        <!-- <apex:outputText value="Leveling Division" rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}" escape="false"></apex:outputText> -->
+        <apex:outputText value="Foundation Division" rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}" escape="false"></apex:outputText>
+        <apex:outputText value="Sealing Division" rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}" escape="false"></apex:outputText>
+    </div>
+    <div id="page-one-body">
+        <br />
+
+        <div style="border:1px solid black;width:100%;text-align:center;padding-top:3px;padding-bottom:3px;margin-bottom:5px">
+            <apex:outputText style="font-size:95%" value="DRIVEWAYS &bull; SIDEWALKS &bull; STEPS &bull; PATIO &bull; APRONS &bull; GARAGES &bull; CONCRETE CRACK SEALING" rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}" escape="false"></apex:outputText>
+            <apex:outputText style="font-size:109%" value="FOUNDATION PIERING &bull; BASEMENT WALLS &bull; CHIMNEYS &bull; PORCHES" rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}" escape="false"></apex:outputText>
+            <apex:outputText style="font-size:103%" value="DRIVEWAYS &bull; SIDEWALKS &bull; STEPS &bull; PATIOS &bull; GARAGES &bull; ANY CONCRETE SLAB" rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}" escape="false"></apex:outputText>
+        </div>
+
+        <table style="width:100%">
+            <tr>
+                <td style="width:10px">Email:</td>
+                <td style="border-bottom:.5px solid black; width:40%; text-align:center">{!Quote.Email_from_Contact__c}</td>
+                <td>&nbsp;Date of Estimate:</td>
+                <td style="border-bottom:.5px solid black; width:35%; text-align:center">
+                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!Quote.Date_Of_Estimate__c}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; padding-bottom:4px">
+            <tr>
+                <td style="width:30px">Preferred Phone:</td>
+                <td style="border-bottom:.5px solid black; width:32%; text-align:center">{!Quote.Opportunity.Contact__r.Phone}</td>
+                <td style="width:25px">&nbsp;&nbsp;Secondary Phone:</td>
+                <td style="border-bottom:.5px solid black; width:32%; text-align:center">{!Quote.Opportunity.Contact__r.Phone}</td>
+            </tr>
+        </table>
+
+        <table style="width:100%;border:1px solid black; padding:5px; margin-top:7px; padding-bottom: 8px">
+             <tr>
+                <td style="width:10%">Customer:</td>
+                <td style="border-bottom:.5px solid black; width:37%">&nbsp;{!Quote.Contact_Name__c}</td>
+                <td style="width:14%">&nbsp;Job Location:</td>
+                <td style="border-bottom:.5px solid black; width:37%">&nbsp;{!Quote.Account.Name}</td>
+            </tr>
+            <tr>
+                <td style="width:30px"></td>
+                <td style="border-bottom:.5px solid black; width:32%">&nbsp;{!Quote.Account.BillingStreet}</td>
+                <td style="width:25px">&nbsp;</td>
+                <td style="border-bottom:.5px solid black; width:32%">&nbsp;{!Quote.Opportunity.Work_Address__c}</td>
+            </tr>
+            <tr>
+                <td style="width:30px">&nbsp;</td>
+                <td style="border-bottom:.5px solid black; width:32%">&nbsp;<apex:outputText value="{!Quote.Account.BillingCity}," rendered="{!IF(ISNULL(Quote.Account.BillingCity), false, true)}" escape="false"></apex:outputText> {!Quote.Account.BillingState} {!Quote.Account.BillingPostalCode}</td>
+                <td style="width:25px"></td>
+                <td style="border-bottom:.5px solid black; width:32%">&nbsp;<apex:outputText value="{!Quote.Opportunity.Work_City__c}," rendered="{!IF(ISNULL(Quote.Opportunity.Work_City__c), false, true)}" escape="false"></apex:outputText> {!Quote.Opportunity.Work_State__c} {!Quote.Opportunity.Work_Zip_Code__c}</td>
+            </tr>
+
+        </table>
+        <table style="width:100%;border-width:0px 1px 1px 1px;border-style:solid">
+            <tr>
+                <td colspan="2" style="width:49%">&nbsp;Salesperson: {!$User.FirstName} {!$User.LastName}</td>
+                <td style="border-left:.5px solid black;width:26%">
+                    &nbsp;Electricity Available? {!Quote.Electric_Available__c}
+                </td>
+                <td style="border-left:.5px solid black;width:26%">&nbsp;Map # {!Quote.Opportunity.Map__c}</td>
+            </tr>
+        </table>
+        <table style="width:100%;border-width:0px 1px 1px 1px;border-style:solid">
+            <tr>
+                <td colspan="2" style="width:49%">&nbsp;
+                    <apex:outputText value="Sealing Bid: Yes"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}" escape="false"></apex:outputText>
+                    <apex:outputText value="Number of piers needed: {!Quote.Number_of_piers_needed__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}" escape="false"></apex:outputText>
+                    <apex:outputText value="May work be performed with owner not home? {!Quote.Work_Performed_Owner_Gone__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}" escape="false"></apex:outputText>
+                </td>
+                <td style="border-left:.5px solid black;width:26%">&nbsp;
+                    <apex:outputText value="Water Available: {!Quote.Water_Available__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}" escape="false"></apex:outputText>
+                    <apex:outputText value="Water Available: {!Quote.Water_Available__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}" escape="false"></apex:outputText>
+                    <apex:outputText value="Downhill: {!Quote.Downhill__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}" escape="false"></apex:outputText>
+                </td>
+                <td style="border-left:.5px solid black;width:26%">&nbsp;
+                    <apex:outputText value="Truck Access: {!Quote.Truck_Access__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}" escape="false"></apex:outputText>
+                    <apex:outputText value="Floor Pumping? {!Quote.Floor_Pumping__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}" escape="false"></apex:outputText>
+                    <apex:outputText value="Removal of old sealant? {!Quote.Removal_of_old_sealant__c}"
+                                     rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}" escape="false"></apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;border-width:0px 1px 1px 1px;border-style:solid">
+            <tr style="min-height:42px">
+                <td style="vertical-align:top">&nbsp;Special Instructions: {!Quote.Special_Instructions__c}</td>
+            </tr>
+        </table>
+        <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+            <tr>
+                <td style="border:1px solid black;padding:5px; text-align:center; height:35px">Description of Work</td>
+
+            </tr>
+        </table>
+
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Area_1__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:1em; vertical-align:top;">
+                        <apex:outputText value="{!Quote.Area_1__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                    <!-- <td style="border:1px solid black; padding:10px; vertical-align:top; text-align:center">
+                        <apex:outputText value="{0, number, ###,##0.00}<br /><br />" rendered="{!IF(ISNULL(Quote.Area_1_Price__c),false,true)}" escape="false">
+                            <apex:param value="{!Quote.Area_1_Price__c}"/>
+                        </apex:outputText>
+                    </td> -->
+                </tr>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Area_2__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; vertical-align:top;">
+                        <apex:outputText value="{!Quote.Area_2__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Area_3__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="{!Quote.Area_3__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Area_4__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="{!Quote.Area_4__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Area_5__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="{!Quote.Area_5__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+
+        <apex:outputText rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}">
+            <div style="page-break-after:always;" />
+            <div id="page-two-header" style="text-align:center">
+                FOUNDATION DETAILS<br /><br />
+            </div>
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border-top:1px solid black; border-left:1px solid black; border-bottom:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText>
+                            <p>UNDERPINNING PILINGS</p>
+                        </apex:outputText>
+                    </td>
+                    <td style="border-top:1px solid black; border-right:1px solid black; border-bottom:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText rendered="{!IF(Quote.Fn_Lifetime_Warranty__c,true, false)}">
+                             <p>Lifetime Warranty applies for hydraulically driven pilings (refer to warranty page)</p>
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;" colspan="2">
+                       <apex:outputText rendered="{!IF(ISNULL(Quote.Fn_Driven_Pilings_to_Install__c),false,true)}">
+                            <ul>
+                                <apex:outputText>
+                                		<li>Install {!Quote.Fn_Driven_Pilings_to_Install__c} Hydraulically driven piling(s) with underpinning bracket(s)</li>
+                                </apex:outputText>
+                                <apex:outputText>
+                                    <li>Will jack up and try to return the structure back to be reasonably close to its original position, but in no case do we guarantee how close we will be able to restore the structure to its original position.  We will stop the jacking procedure if any undesirable cracks occur.</li>
+                                </apex:outputText>
+                                <apex:outputText>
+                                    <li>Will underpin and provide very little or no lift</li>
+                                </apex:outputText>
+
+                            </ul>
+                       </apex:outputText>
+                   </td>
+               </tr>
+               <tr>
+                   <td style="border-top:1px solid black; border-left:1px solid black; border-bottom:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                       <apex:outputText>
+                           <p>BOWED OR CRACKED WALL REPAIR</p>
+                       </apex:outputText>
+                   </td>
+                   <td style="border-top:1px solid black; border-right:1px solid black; border-bottom:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                       <apex:outputText rendered="{!IF(Quote.Fn_Lifetime_Warranty_Wall_Repair__c,true, false)}">
+                       		<p>Lifetime Warranty applies for bowed or cracked wall repair (refer to warranty page)</p>
+                       </apex:outputText>
+                   </td>
+               </tr>
+               <tr>
+                   <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;" colspan="2">
+                       <ul>
+                           <apex:outputText rendered="{!IF(ISNULL(Quote.Fn_LF_of_Wall_to_Stabalize__c),false,true)}">
+                           		<li>Stabalize in place {!Quote.Fn_LF_of_Wall_to_Stabalize__c} LF of wall.  The wall will not be straightened; it will be reinforced in its current position.</li>
+                           </apex:outputText>
+                           <apex:outputText rendered="{!IF(ISNULL(Quote.Fn_LF_of_Wall_to_Straighten_Stabalize__c),false,true)}">
+                           		<li>Straighten and stabalize {!Quote.Fn_LF_of_Wall_to_Straighten_Stabalize__c} LF of wall.  The wall will be straightened to be reasonably close to its original position.</li>
+                           </apex:outputText>
+                           <apex:outputText rendered="{!IF(ISNULL(Quote.Fn_3_8_Rebar_Block__c),false,true)}">
+                               <li>Cut 2-1/2" holes in the top row of block on the exterior and insert {!Quote.Fn_3_8_Rebar_Block__c} 3/8" rebar per 16" block. (Installed vertically into the hallow cells)</li>
+                           </apex:outputText>
+                           <apex:outputText>
+                               <li>Pump the wall full of cement grout.  -- This line has no conditional display</li>
+                           </apex:outputText>
+                           <apex:outputText rendered="{!IF(ISNULL(Quote.Fn_Amt_of_Wall_w_o_Rebar_Insertion__c),false,true)}">
+                           		<li>Due to limited access, {!Quote.Fn_Amt_of_Wall_w_o_Rebar_Insertion__c} of wall will not have rebar inserted vertically into the cells and that portion of the wall may need to be pumped full of grout from the inside</li>
+                           </apex:outputText>
+                           <apex:outputText>
+                           		<li>After pumping is completed, the holes will be filled in and the exterior side of the wall showing above grade will be finish parged. (No guarantees on parging when applying over paint, tar or any other existing coatings that areunsound, there is no guarantee that the mortar color will match the existing mortar) -- This line has no conditional display</li>
+                           </apex:outputText>
+                           <apex:outputText rendered="{!IF(ISNULL(Quote.Fn_Carbon_Fiber_Straps__c),false,true)}">
+                           		<li>Install {!Quote.Fn_Carbon_Fiber_Straps__c} Carbon fiber reinforcing straps</li>
+                           </apex:outputText>
+                           <apex:outputText>
+                           		<li>Some wall jacks will remain in place for backfilling and will be removed when the grout has sufficiently hardened.  When all that remains is the removal of wall jacks, the project is considered completed for payment terms</li>
+                           </apex:outputText>
+
+
+                       </ul>
+                   </td>
+               </tr>
+               <apex:outputText rendered="{!IF(Quote.Fn_Excavation__c,true,false)}">
+                   <tr>
+                       <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;" colspan="2">
+
+                       		<p style="font-size: 80%;"><strong>EXCAVATION</strong>. A-1 Concrete will provide excavation and backfill.  The excavated areas will be backfilled to rough grade.  A-1 Concrete is not responsible for re-landscaping or damage to plants and yard.  Customer is responsible for removing plants prior to our arrival if they want to reuse them.  <strong>*Rock or Obstruction removal (extra charge)</strong> is defined as material which cannot be excavated using a standard excavating bucket or objects that significantly slow down the excavating process.</p>
+                        </td>
+                    </tr>
+                </apex:outputText>
+            </table>
+        </apex:outputText>
+        <!--<apex:outputPanel rendered="{!IF(ISNULL(Quote.Fn_3_8_Rebar_Block__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="# of 3/8in Rebar Pilings per Block: {!Quote.Fn_3_8_Rebar_Block__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Fn_Carbon_Fiber_Straps__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="# of Carbon Fiber Straps: {!Quote.Fn_Carbon_Fiber_Straps__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Fn_Driven_Pilings_to_Install__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="# of Driven Pilings to Install: {!Quote.Fn_Driven_Pilings_to_Install__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Fn_Amt_of_Wall_w_o_Rebar_Insertion__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="Amt of Wall w/o Rebar Insertion: {!Quote.Fn_Amt_of_Wall_w_o_Rebar_Insertion__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Fn_LF_of_Wall_to_Stabalize__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="LF of Wall to Stabalize: {!Quote.Fn_LF_of_Wall_to_Stabalize__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(ISNULL(Quote.Fn_LF_of_Wall_to_Straighten_Stabalize__c),false,true)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="LF of Wall to Straighten/Stabalize: {!Quote.Fn_LF_of_Wall_to_Straighten_Stabalize__c}<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(Quote.Fn_Lifetime_Warranty__c,true, false)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="Lifetime Warranty for Driven Pilings<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(Quote.Fn_Lifetime_Warranty_Wall_Repair__c,true, false)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="Lifetime Warranty - Wall Repair<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IF(Quote.Fn_Excavation__c,true,false)}">
+            <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both">
+                <tr>
+                    <td style="border:1px solid black; padding:5px; min-height:2em; vertical-align:top;">
+                        <apex:outputText value="Excavation<br /><br />" escape="false"></apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel> -->
+
+
+        <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both;">
+            <tr>
+                <td style="border:1px solid black;padding:5px;height:35px; width:30%">
+                    <apex:outputText value="Start: " rendered="{!IF(ISNULL(Quote.Start_Time__c),false,true)}" />
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy ' - ' h:mm a}" rendered="{!IF(ISNULL(Quote.Start_Time__c),false,true)}">
+                        <apex:param value="{!Quote.Start_Time__c}" />
+                    </apex:outputText>
+                </td>
+                <td style="border:1px solid black;padding:5px;height:35px; width:30%">
+                    Payment Type: {!Quote.Payment__c}
+                </td>
+                <td style="border:1px solid black;padding:5px;">
+                    <div style="font-size:140%; text-align:left; width:50%; float:left">
+                        <apex:outputText value="Sub-Total: " rendered="{!IF(ISNULL(Quote.Discount__c),false,true)}"/>
+                    </div>
+                    <div style="font-size:120%; text-align:right; width:50%; float:right;">
+                        <apex:outputText value="${0, number, ###,##0.00}" rendered="{!IF(ISNULL(Quote.Discount__c),false,true)}">
+                            <apex:param value="{!Quote.Total_Price__c}" />
+                        </apex:outputText>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both;">
+            <tr>
+                <td style="border:1px solid black;padding:5px;height:35px; width:30%">
+                    <apex:outputText value="Finish: " rendered="{!IF(ISNULL(Quote.Finish_Time__c),false,true)}" />
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy ' - ' h:mm a}" rendered="{!IF(ISNULL(Quote.Finish_Time__c),false,true)}">
+                        <apex:param value="{!Quote.Finish_Time__c}" />
+                    </apex:outputText>
+                </td>
+                <td style="border:1px solid black;padding:5px;height:35px; width:30%">
+                    <apex:outputPanel rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}">
+                        Sealant Used: {!Quote.Sealant_Used__c}
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}">
+                        Lime Used: {!Quote.Lime_Used__c}
+                    </apex:outputPanel>
+                </td>
+                <td style="border:1px solid black;padding:5px;">
+                    <div style="font-size:140%; text-align:left; width:50%; float:left">
+                        <apex:outputText value="Discount: " rendered="{!IF(ISNULL(Quote.Discount__c),false,true)}"/>
+                    </div>
+                    <div style="font-size:120%; text-align:right; width:50%; float:right;">
+                        <apex:outputText value="${0, number, ###,##0.00}" rendered="{!IF(ISNULL(Quote.Discount__c),false,true)}">
+                            <apex:param value="{!Quote.Discount__c}"/>
+                        </apex:outputText>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table style="border:1px solid black;border-collapse:collapse;width:100%;clear:both;">
+            <tr>
+                <td style="border:1px solid black;padding:5px;height:35px; width:30%">
+                    <apex:outputText value="Date Completed: " rendered="{!IF(ISNULL(Quote.Date_of_completion__c),false,true)}" />
+                    <apex:outputText value="{0, date, MM'/'d'/'yyyy}" rendered="{!IF(ISNULL(Quote.Date_of_completion__c),false,true)}">
+                        <apex:param value="{!Quote.Date_of_completion__c}" />
+                    </apex:outputText>
+                </td>
+                <td style="border:1px solid black;padding:5px;height:35px; width:30%">
+                    <apex:outputPanel rendered="{!IF(Quote.Job_Type__c = 'Sealing', true, false)}">
+                        Sand Used: {!Quote.Sand_Used__c}
+                    </apex:outputPanel>
+                    <!-- <apex:outputPanel rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}">
+                        Truck Crew: {!Quote.Truck_Crew__c}
+                    </apex:outputPanel> -->
+                </td>
+                <td style="border:1px solid black;padding:5px;">
+                    <div style="font-size:140%; font-weight:bold; text-align:left; width:50%; float:left">Total:</div>
+                    <div style="font-size:120%; text-align:right; width:50%; float:right;">
+                        <apex:outputText value="${0, number, ###,##0.00}">
+                            <apex:param value="{!Quote.Grand_Total__c}"/>
+                        </apex:outputText>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <apex:outputPanel rendered="{!IF(Quote.Job_Type__c ='Leveling', true, false)}">
+                <div style="font-size:80%; text-align:center; padding-bottom:4px"><br />
+                NOT RESPONSIBLE FOR STRESS CRACKS.
+                IF REQUIRED, OWNER RESPONSIBLE FOR CITY PERMITS.<br />
+                OWNER TO PATCH AND SEAL ALL CRACKS TO PREVENT EROSION.<br />
+                TWO YEAR GUARENTEE ON LEVELING WORK FROM DATE OF COMPLETION. </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!IF(Quote.Job_Type__c ='Sealing', true, false)}">
+                <div style="text-align:center;padding-top:4px;padding-bottom:4px">Tack Free - 1 to 2 hours. &nbsp;&nbsp;&nbsp;&nbsp; Final Cure - 3 to 5 days.</div>
+                <div style="font-size:70%; text-align:center">
+                    2 YEAR WORKMANSHIP GUARANTEE ON SEALING FROM DATE OF COMPLETION.
+                    SEALING IS NOT GUARANTEED AGAINST FAILURE CAUSED BY CONCRETE HEAVING IN FREEZING CONDITIONS.
+                </div>
+            </apex:outputPanel>
+        </div>
+        <div style="text-align:center; font-size: 80%">
+
+            Customer agrees to pay A-1 upon completion according to the terms contained herein.
+            <br />
+            This proposal is subject to the terms and Conditions on both the front and additional pages hereof.
+            The proposal may be only be accepted by the Customer within thirty days of this date and thereafter shall be void.
+        </div>
+
+    </div>
+    <div style="page-break-after:always;" />
+
+
+<!-- FOUNDATION SECOND PAGE -->
+    <!--
+<apex:outputPanel rendered="{!IF(Quote.Job_Type__c = 'Foundation', true, false)}">
+    <div id="page-two-header" style="text-align:center; font-weight:bold; margin-bottom: 3px">
+        ADDITIONAL TERMS AND CONDITIONS<br />
+    </div>
+    <div id="page-two-body" style="font-size:70%">
+        <div style="text-align:center; font-weight:bold; font-size:105%">Scheduling</div>
+            Time is not of the essence in this contract.  The start date for this project will be determined by the Owner and A-1 and will be scheduled at A-1’s next available date.  If an event occurs, such as mechanical difficulty, a scheduling conflict or inclement weather which prevents A-1 from completing the project on the scheduled date A-1 will contact the Owner to schedule an alternate completion date.
+            <br /><br />
+        <div style="text-align:center; font-weight:bold; font-size:105%">Notice of Cancellation</div>
+            You, Owner, have an unconditional right to cancel this contract any time prior to midnight of the third business day after the day you signed it.  To exercise this right, you must notify A-1 Concrete Leveling in writing.  You may place the notice in the U.S. Mail addressed to A-1 Concrete Leveling at the address at the top of this contract, with proper postage, any time before the deadline specified above.
+            <br /><br />
+        <div style="text-align:center; font-weight:bold; font-size:105%; margin-bottom:3px">Helical Foundation Supports - Transferable Warranty Terms</div>
+
+        <div style="text-align:center; font-weight:bold; font-size:105%; margin-bottom:3px">General Job Performance</div>
+
+            <div style="text-decoration:underline; font-weight:bold">General description of process for typical job:</div>
+            <div style="margin-bottom:3px">
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;We first excavate around the damaged foundation in predetermined locations to expose footing.<br />
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;We then install steel pilings to the proper depth to obtain proper compression loading.<br />
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;Next we attach brackets to the pilings and to the bottom of the footings.<br />
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;We then insert hydraulic jacks and lift the damaged area back to as close to the original position as conditions will allow.<br />
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;Leaving the pilings/brackets permanently attached, we then backfill to a rough grade, concealing the support system.
+            </div>
+            <div style="font-weight:bold; margin-bottom:3px">
+                &#42;Note: A-1 Concrete Leveling &amp; Foundation Repair will make any deviation or modification of the above process as deemed necessary.
+            </div>
+
+            <div style="font-weight:bold; text-decoration:underline;">
+                Additional Information:
+            </div>
+            <div>
+                <span style="font-weight:bold">Exact realignment:</span>  Every effort will be made to lift the structure back to its original position but A-1 cannot guarantee these results due to the condition of the structure.  Ideally, the foundation will move back to its original position but there is a possibility that only a partial correction will occur or conditions will only allow stabilization to eliminate further settling.
+                <br />
+                <span style="font-weight:bold">Structural damage:</span>  As we are attempting to lift a structure back to its proper position that has settled over a period of time, some damage could occur.  Although this is not very common, A-1 is not responsible for any and all damages including, but not limited to:  cracks in foundation, interior cracking due to lifting or carpentry work to realign windows and doors.
+                <br />
+                <span style="font-weight:bold">Landscaping:</span>  Owner will be responsible for removal of any landscaping before excavation begins.  Owner is responsible for all final landscaping.
+                <br />
+                <span style="font-weight:bold">Crack and joint repair:</span>  Any repair of interior or exterior cracks and joints is the responsibility of the owner unless prior arrangements have been made with an A-1 Concrete Leveling &amp; Foundation Repair representative.
+                <br />
+                <span style="font-weight:bold">Concealed conditions:</span>  On some rare occasions we find conditions that are not apparent from our initial visual inspection of the job or that were not described to us beforehand.  If our foundation crew finds that the work cannot be performed, they will stop the work and clean up the job site.  We will not charge for the time worked including travel time.
+            </div>
+            <br />
+            <div style="font-weight:bold; text-decoration:underline;">Homeowners responsibilities before the start of the repair process</div>
+            <div>
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;Inform crew of any conditions that may impede the completion of the work.<br />
+                &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp;Inform crew of any knowledge of existing underground lines in work area such as sewer, gas, electric, water, etc.
+            </div>
+            <br />
+        <div style="text-align:center; font-weight:bold; font-size:105%">Customer Acceptance</div>
+            Customer hereby acknowledges receipt of a copy of this agreement and their acceptance of the terms and conditions described
+            on both the face and back of this agreement.<br /><br />
+
+            <br /><br />
+
+        <div style="width:50%; clear:both;height: 6em"><apex:image url="{!Quote.Signature_URL__c}" /></div>
+
+        <br />
+        <table style="width:100%">
+            <tr>
+                <td colspan="2" style="font-weight:bold; text-align:center">
+                    <br />
+                    <span style="font-size:140%">WE APPRECIATE YOUR BUSINESS.<br /></span>
+                    <span style="font-size:160%">THANK YOU</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</apex:outputPanel>
+-->
+
+<!-- LEVELING SECOND PAGE -->
+<!-- <apex:outputPanel rendered="{!IF(Quote.Job_Type__c = 'Leveling', true, false)}"> -->
+    <div id="page-two-header" style="text-align:center">
+        ADDITIONAL TERMS AND CONDITIONS<br /><br />
+    </div>
+    <div id="page-two-body" style="font-size:86%">
+        <div style="text-align:center; font-weight:bold">Scheduling</div>
+            Time is not of the essence in this contract.  The start date for this project will be determined by the Owner and A-1 and will be scheduled at A-1’s next available date.  If an event occurs, such as mechanical difficulty, a scheduling conflict or inclement weather which prevents A-1 from completing the project on the scheduled date A-1 will contact the Owner to schedule an alternate completion date.
+            <br /><br />
+        <div style="text-align:center; font-weight:bold">Notice of Cancellation</div>
+            You, Owner, have an unconditional right to cancel this contract any time prior to midnight of the third business day after the day you signed it.  To exercise this right, you must notify A-1 Concrete Leveling in writing.  You may place the notice in the U.S. Mail addressed to A-1 Concrete Leveling at the address at the top of this contract, with proper postage, any time before the deadline specified above.
+            <br /><br />
+        <div style="text-align:center; font-weight:bold">A-1 Concrete Leveling of Greenwood Warranty</div>
+            A-1 will provide all labor, material and equipment to restore the surfaces repaired under this Agreement for the 4 year period following the date of completion (unless otherwise specified in the Agreement).  Any warranty of raised slabs is expressly contingent on the Customer’s proper caulking of control or expansion joints and the repair of cracks, relocation of downspouts and soil replacement as necessary.  This warranty does not apply to failure due to soil erosion, water penetration below the slab, vegetation or tree roots, earth quake or flooding.  Customer shall timely notify A-1 of any breach and/or non-conformance with this Agreement.  Upon such notice, A-1 shall have the right to re-enter and inspect the premises and shall further have a reasonable opportunity to cure any deficiency in workmanship or non-conformance to this Agreement.  The warranty does not permit refund or other remuneration and A-1 has the right to use the method of its choice to remedy any deficiencies. THERE IS A 2 YEAR WARRANTY ON ALL CAULKING WORK.  There is no warranty for patching with cement or repair mortar.
+            <br /><br />
+        <div style="text-align:center; font-weight:bold">General Job Performance:</div>
+            The surfaces to be repaired will be leveled and raised to an optimal point of recovery and A-1 will use its best efforts to restore the misaligned portion(s) of the concrete surface to as near its original position as is possible.  The customer acknowledges their understanding that the surfaces may not return completely to their original position.  Tree roots will not be removed.  Slabs lifted to align with slabs raised by tree roots are not considered permanent repairs.
+        <br /><br />
+            Siding may need to be cut away to allow the concrete to lift to the proper position. A-1 does not replace or repair siding after concrete has been lifted. Porch posts may need to be trimmed, shimmed or caulked and siding trim may need to be replaced.  A-1 does not perform any carpentry or other services other than the leveling services described herein.
+        <br /><br />
+            The Customer acknowledges A-1 has taken reasonable action to ascertain the general and site specific conditions which can affect the work or its cost, including but not limited to the uncertainties of the physical conditions at the site and conditions of the ground.  These conditions include but are not limited to undisclosed pipes and utilities, downspout lines and irrigation systems.  The Customer acknowledges and agrees the A-1 shall not be responsible for any damage or loss occasioned by subsurface or latent physical conditions at the site.   The Customer agrees that such conditions are impossible to determine in advance of the completion of the work and that there may be unknown physical conditions at the site of an unusual nature and that differ materially from those ordinarily encountered and generally recognized as inherent in the work of the character provided for in the Agreement.  A-1 is not responsible for cracks that become exposed.
+            <br /><br />
+        <div style="text-align:center; font-weight:bold">Customer Acceptance</div>
+            Customer hereby acknowledges receipt of a copy of this agreement and their acceptance of the terms and conditions described
+            on both the face and back of this agreement.<br /><br />
+
+
+        <div style="width:50%; clear:both;height: 6em"><apex:image url="{!Quote.Signature_URL__c}" /></div>
+
+        <br />
+        <table style="width:100%">
+            <tr>
+                <td style="width:50%"><div>Printed Name: {!Quote.Signature_Name__c}</div></td>
+                <td><div>Signature Date: {!Quote.Signature_Date__c}</div></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="font-weight:bold; text-align:center">
+                    <br />
+                    <span style="font-size:140%">WE APPRECIATE YOUR BUSINESS.<br /></span>
+                    <span style="font-size:160%">THANK YOU</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+<!-- </apex:outputPanel> -->
+        <apex:outputPanel rendered="{!imagesAttached}">
+            <div style="page-break-before:always;">&nbsp;&nbsp;</div>
+        </apex:outputPanel>
+
+        <table id="imgTable" style="width:100%;">
+            <apex:repeat value="{!docMap}" var="mapIndex">
+                <tr>
+                    <apex:repeat value="{!docMap[mapIndex]}" var="doc">
+                        <td style="width:40%!important;">
+                            <span style="text-align:center;">
+                                <img style="width:90%;" src="https://c.cs18.content.force.com/servlet/servlet.ImageServer?id={!doc.Id}&oid=00D1100000ButWA" alt="{!doc.Name}" />
+                            </span>
+
+                            <br />
+                            <div style="font-size:x-small;">{!docMap[mapIndex][doc]}</div>
+                        </td>
+                    </apex:repeat>
+                </tr>
+                <apex:outputText escape="false" rendered="{!docKeySize > mapIndex}">
+                    <tr>
+                        <td style="font-size:xx-small;margin-top:0px;margin-bottom:0px;">&nbsp;</td>
+                        <td style="font-size:xx-small;margin-top:0px;margin-bottom:0px;">&nbsp;</td>
+                    </tr>
+                </apex:outputText>
+            </apex:repeat>
+        </table>
+</apex:page>

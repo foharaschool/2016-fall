@@ -1,0 +1,44 @@
+public class OpportunityPickUpPDFController {
+    public Opportunity selectedOpportunity {get;set;}
+    public List<OpportunityLineItem> oppLineItems {get;set;}
+    public String billingAddress {get;set;}
+    public String installDateStringified {get;set;}
+
+    public OpportunityPickUpPDFController(ApexPages.StandardController sc) {
+         Opportunity scOpp = (Opportunity)sc.getRecord();
+
+        selectedOpportunity = [SELECT Id, Account.Name, Account.BillingStreet, Account.BillingCity, Account.BillingState, Account.BillingPostalCode, Cross_street__c, Install_City__c, Install_State__c,
+                               Install_Street_Line_1__c, Install_Street_Line_2__c, Install_Zip__c, Key_Contact__c, Key_Contact__r.Name, Key_Contact__r.Email, Key_Contact__r.Phone, Key_Contact__r.Fax,
+                               Install_date__c, Pickup_Date__c, Owner.Name, Point_of_Interest__c, Pickup_Notes__c
+                               FROM Opportunity
+                               WHERE Id =: scOpp.id];
+
+        if (selectedOpportunity.Install_date__c != null) {
+        	installDateStringified =  selectedOpportunity.Install_date__c.Month() + '/' +  selectedOpportunity.Install_date__c.Day() + '/' +selectedOpportunity.Install_date__c.Year();
+        } else {
+            installDateStringified = '';
+        }
+
+         billingAddress = '';
+        if(selectedOpportunity.Account.BillingStreet != null) {
+            billingAddress += selectedOpportunity.Account.BillingStreet;
+        }
+
+        if (selectedOpportunity.Account.BillingCity != null) {
+  			billingAddress += ' ' + selectedOpportunity.Account.BillingCity;
+        }
+
+        if (selectedOpportunity.Account.BillingState != null) {
+            billingAddress += ' ' + selectedOpportunity.Account.BillingState;
+        }
+
+        if (selectedOpportunity.Account.BillingPostalCode != null) {
+            billingAddress += ' ' + selectedOpportunity.Account.BillingPostalCode;
+        }
+
+         oppLineItems = [SELECT UnitPrice, Description, Quantity, Product2.Name, Total_On_Site__c, Unit_Conversion_On_Site__c, Unit_Conversion_Pickup__c, Measurement__c, Pickup_Quantity__c
+                        FROM OpportunityLineItem
+                        WHERE OpportunityId =: scOpp.Id And Measurement__c != null And Job_Type__c != 'Service (Previous)'
+                        ORDER BY Total_On_Site__c DESC NULLS LAST];
+    }
+}

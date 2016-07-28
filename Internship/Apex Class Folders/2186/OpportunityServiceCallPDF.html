@@ -1,0 +1,177 @@
+<apex:page standardController="Opportunity" renderAs="PDF" extensions="OpportunityServiceCallPDFController">
+    <!-- HEADER SECTION HEADER SECTION HEADER SECTION HEADER SECTION HEADER SECTION HEADER SECTION HEADER SECTION HEADER SECTION -->
+    <div class='headerSection'>
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <apex:image url="{!$Resource.URAF_LOGO_PNG}"  width="150" height="150"/>
+                </td>
+                <td>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    Service Call Date: {!IF(selectedOpportunity.Service_Call_Date__c != null, TEXT(MONTH(selectedOpportunity.Service_Call_Date__c)) + "/" + TEXT(DAY(selectedOpportunity.Service_Call_Date__c)) + "/" + TEXT(YEAR(selectedOpportunity.Service_Call_Date__c)),"")}
+                </td>
+                <td>
+                    <div>
+                        1500 W. Fullerton Ave<br/>
+                        Addison, IL 60101<br/>
+                        Ph. (630) 543-7990<br/>
+                        Fax (630) 543-7992<br/>
+                        _________ Confirmed
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- SUMMARY SECTION SUMMARY SECTION SUMMARY SECTION SUMMARY SECTION SUMMARY SECTION SUMMARY SECTION SUMMARY SECTION SUMMARY SECTION -->
+    <h1 style=" text-align: center;">
+        SERVICE CALL TICKET
+    </h1>
+    <div id='summarySection'>
+        <table style="width:100%">
+            <tr>
+
+                <td>Order Taken By:</td>
+                <td>{!selectedOpportunity.Owner.Name}</td>
+                <td>Cross Street:</td>
+                <td>{!selectedOpportunity.Cross_street__c}</td>
+            </tr>
+            <tr>
+                <td>Contact Person:</td>
+                <td>{!selectedOpportunity.Key_Contact__r.Name}</td>
+                <td>Job Site Address:</td>
+                <td>{!selectedOpportunity.Install_Street_Line_1__c + ' ' + selectedOpportunity.Install_Street_Line_2__c  +
+                    ' ' + selectedOpportunity.Install_City__c + ' ' + selectedOpportunity.Install_Zip__c}
+                </td>
+
+            </tr>
+            <tr>
+                <td>Phone:</td>
+                <td>{!selectedOpportunity.Key_Contact__r.Phone}</td>
+                <td>Point of Interest:</td>
+                <td>{!selectedOpportunity.Point_of_Interest__c}</td>
+            </tr>
+            <tr>
+                <td>Dig Clear Date:</td>
+                <td>{!IF(digDate != null, TEXT(MONTH(digDate)) + "/" + TEXT(DAY(digDate)) + "/" + TEXT(YEAR(digDate)),"")}</td>
+                <td>Dig Clear Time:</td>
+                <td>{!digDateTime}</td>
+
+            </tr>
+        </table>
+    </div>
+
+    <br/>
+
+    <!-- LINE ITEM SECTION  LINE ITEM SECTION  LINE ITEM SECTION  LINE ITEM SECTION  LINE ITEM SECTION  LINE ITEM SECTION  LINE ITEM SECTION -->
+    <div id='lineItemSection'>
+        <table style="width:100%;border-collapse: collapse; border: 1px solid black; border-spacing:5px;">
+            <tr>
+                <th style="text-align:center;border: 1px solid black;">Service Type</th>
+                <th style="text-align:center;border: 1px solid black;" width="30%">Product Name</th>
+                <th style="text-align:center;border: 1px solid black;" width="20%">Line Description</th>
+                <th style="text-align:center;border: 1px solid black;">Quantity</th>
+                <th style="text-align:center;border: 1px solid black;">Pickup</th>
+
+            </tr>
+            <apex:repeat value="{!oppLineItems}" var="ol">
+                <tr>
+                    <td style="border: 1px solid black;">
+                        {!ol.Job_Type__c}
+                    </td>
+                    <td style="border: 1px solid black;">
+                        {!ol.Product2.Name}
+                    </td>
+                    <td style="border: 1px solid black;">
+                        {!ol.Description}
+                    </td>
+                    <td style="border: 1px solid black;">
+                        {!IF(ol.Job_Type__c != 'Service (Previous)', FLOOR(ol.Quantity), "")}
+                        {!IF(ol.Job_Type__c != 'Service (Previous)', ol.Measurement__c, "")}
+                        {!IF(AND(ol.Unit_Conversion_Order__c != null, ol.Unit_Conversion_Order__c != 0, ol.Job_Type__c != 'Service (Previous)'), " (" & TEXT(ol.Unit_Conversion_Order__c) & " Units) ", "")}
+                    </td>
+                    <td style="border: 1px solid black;">
+                        {!ol.Pickup_Quantity__c}
+                    </td>
+
+                </tr>
+            </apex:repeat>
+        </table>
+    </div>
+
+
+    <br/>
+
+    <div style="margin-left:5px;margin-right:5px;font-weight: bold;">
+        Notes:&nbsp;{!selectedOpportunity.Service_Call_Notes__c}
+
+    </div>
+
+    <br/>
+    <!-- DAMAGE/MISSING FENCE SECTION  DAMAGE/MISSING FENCE SECTION  DAMAGE/MISSING FENCE SECTION  DAMAGE/MISSING FENCE SECTION  DAMAGE/MISSING FENCE SECTION -->
+    <div id='damageMissingFenceSection' style="font-size: 8pt;">
+        <table style="width:80%;border-spacing:5px;">
+            <tr>
+                <td>Damage: </td>
+                <td>Y / N</td>
+                <td>__________________________________________________</td>
+            </tr>
+            <tr>
+                <td>Missing: </td>
+                <td>Y / N</td>
+                <td>__________________________________________________</td>
+            </tr>
+        </table>
+    </div>
+
+
+    <br/>
+
+    <!-- SIGNATURE SECTION  SIGNATURE SECTION  SIGNATURE SECTION  SIGNATURE SECTION  SIGNATURE SECTION  SIGNATURE SECTION  SIGNATURE SECTION -->
+    <div id='signatureSection'>
+        <table style="width:100%;border-spacing:5px;">
+            <tr>
+                <td>Customer Signature:&nbsp;_______________________________________________</td>
+                <td>Date: _______</td>
+            </tr>
+            <tr>
+                <td>Employees Signature:&nbsp;______________________________________________</td>
+                <td>Date: _______</td>
+            </tr>
+        </table>
+    </div>
+
+    <br/>
+
+    <!-- FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION FOOTER SECTION -->
+    <div id='footerSection' style="font-size: 8pt;">
+        <table style="width:100%; border-spacing:5px;">
+            <tr>
+                <td>Truck#:</td>
+                <td>_______</td>
+
+                <td>Driver:</td>
+                <td>_______</td>
+            </tr>
+            <tr>
+                <td>Job Start Time:</td>
+                <td>_______</td>
+
+                <td>Job End Time:</td>
+                <td>_______</td>
+            </tr>
+            <tr>
+                <td >Driving Time:</td>
+                <td >_______</td>
+
+                <td >Lunch on-site:</td>
+                <td>Y&nbsp;&nbsp;|&nbsp;&nbsp;N</td>
+            </tr>
+
+        </table>
+    </div>
+
+</apex:page>
